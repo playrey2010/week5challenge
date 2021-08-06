@@ -11,9 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 
 @Controller
 public class HomeController {
+
+    ArrayList<Job> jobs = new ArrayList<>();
+    static long id = 0;
 
     @Autowired
     UserRepository userRepository;
@@ -21,9 +25,33 @@ public class HomeController {
     @Autowired
     RoleRepository roleRepository;
 
+
+
     @RequestMapping("/")
-    public String index(){
-        return "index";
+    public String homePage(Model model, Principal principal){
+        if (principal != null){
+            String username = principal.getName();
+            User user = userRepository.findByUsername(username);
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("jobs", jobs);
+        return "jobHP";
+    }
+
+    @GetMapping("/addJob")
+    public String addJob(Model model){
+        model.addAttribute("job", new Job());
+        return "jobForm";
+    }
+
+    @PostMapping("/processJob")
+    public String processJob(@ModelAttribute Job job,
+                             Principal principal){
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+        job.setAuthor(user);
+        jobs.add(job);
+        return "redirect:/";
     }
 
     @RequestMapping("/login")
@@ -73,6 +101,11 @@ public class HomeController {
             roleRepository.save(role);
         }
         return "index";
+    }
+
+    static void idSetter(Job job){
+        id += 1;
+        job.setId(id);
     }
 
 }

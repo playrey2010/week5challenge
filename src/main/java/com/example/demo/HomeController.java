@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -16,7 +13,7 @@ import java.util.ArrayList;
 @Controller
 public class HomeController {
 
-    ArrayList<Job> jobs = new ArrayList<>();
+    static ArrayList<Job> jobs = new ArrayList<>();
     static long id = 0;
 
     @Autowired
@@ -29,6 +26,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String homePage(Model model, Principal principal){
+
         if (principal != null){
             String username = principal.getName();
             User user = userRepository.findByUsername(username);
@@ -40,7 +38,9 @@ public class HomeController {
 
     @GetMapping("/addJob")
     public String addJob(Model model){
-        model.addAttribute("job", new Job());
+        Job job = new Job();
+        idSetter(job);
+        model.addAttribute("job", job);
         return "jobForm";
     }
 
@@ -50,9 +50,50 @@ public class HomeController {
         String username = principal.getName();
         User user = userRepository.findByUsername(username);
         job.setAuthor(user);
-        jobs.add(job);
+        if (!jobExists(job.getId())){
+            jobs.add(job);
+//            System.out.println("me?");
+        } else {
+            jobs.remove(findJobById(job.getId()));
+            jobs.add(job);
+//            System.out.println(job.getTitle());
+//            System.out.println(job.getId());
+//            for (Job job1: jobs){
+//                System.out.println(job1.getTitle());
+//                System.out.println(job1.getId());
+//            }
+        }
+
         return "redirect:/";
     }
+
+    @GetMapping("/updateJob/{id}")
+    public String updateJob(@PathVariable long id, Model model, Principal principal){
+        Job job = findJobById(id);
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username);
+        // automatically redirects if user does not match author id
+        if (job.getAuthor().getId() != user.getId() ){
+            return "redirect:/";
+        }
+        model.addAttribute("job", job);
+        return "jobForm";
+    }
+
+    @RequestMapping("/viewJob/{id}")
+    public String viewJob(@PathVariable long id, Model model){
+        Job job = findJobById(id);
+        model.addAttribute("job", job);
+        return "viewJob";
+    }
+
+    @RequestMapping("/deleteJob/{id}")
+    public String deleteJob(@PathVariable long id){
+        jobs.remove(findJobById(id));
+        return "redirect:/";
+    }
+
+
 
     @RequestMapping("/login")
     public String login(){
@@ -106,6 +147,26 @@ public class HomeController {
     static void idSetter(Job job){
         id += 1;
         job.setId(id);
+    }
+
+    static Job findJobById(long id){
+        for (Job job: jobs){
+            if (job.getId() == id){
+                return job;
+            }
+        }
+        return null;
+    }
+
+    static boolean jobExists(long id){
+        boolean exists = false;
+        for (Job job: jobs){
+            if (job.getId() == id){
+                exists = true;
+                break;
+            }
+        }
+        return exists;
     }
 
 }

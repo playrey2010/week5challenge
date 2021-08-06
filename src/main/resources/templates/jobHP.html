@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -21,8 +21,12 @@
             <h6 class="card-subtitle mb-2 text-muted">[[${job.postedDate}]]</h6>
             <p class="card-text" th:text="${job.description}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
             <a th:href="@{/viewJob/{id}(id=${job.id})}" class="card-link">View</a>
-            <a th:href="@{/updateJob/{id}(id=${job.id})}" class="card-link">Update</a>
-            <a th:href="@{/deleteJob/{id}(id=${job.id})}" class="card-link">Delete</a>
+            <div sec:authorize="isAuthenticated()">
+                <div th:if="${job.author.id == user.id} ">
+                    <a th:href="@{/updateJob/{id}(id=${job.id})}" class="card-link">Update</a>
+                    <a th:href="@{/deleteJob/{id}(id=${job.id})}" class="card-link">Delete</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

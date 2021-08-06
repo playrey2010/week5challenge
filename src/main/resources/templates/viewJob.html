@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -9,31 +9,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 
-    <title>Job Form</title>
+    <title>Job Details</title>
 </head>
 <body>
-<h1>Job Form</h1>
-<form th:action="@{/processJob}" th:object="${job}" method="post">
-    <input type="hidden" th:field="*{id}">
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Title</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" th:field="*{title}">
+<h1>Job</h1>
+<div class="card" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">[[${job.title}]]</h5>
+        <h6 class="card-subtitle mb-2 text-muted">[[${job.postedDate}]]</h6>
+        <p class="card-text" th:text="${job.description}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <h6 class="card-subtitle mb-2 text-muted">[[${job.phone}]]</h6>
     </div>
-    <div class="mb-3">
-        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" th:field="*{description}"></textarea>
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlInput2" class="form-label">Posted Date</label>
-        <input type="text" class="form-control" id="exampleFormControlInput2" th:field="*{postedDate}">
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlInput3" class="form-label">Phone</label>
-        <input type="text" class="form-control" id="exampleFormControlInput3" th:field="*{phone}">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-
-</form>
+</div>
 <!-- Optional JavaScript; choose one of the two! -->
 
 <!-- Option 1: Bootstrap Bundle with Popper -->

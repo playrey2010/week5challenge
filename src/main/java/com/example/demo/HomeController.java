@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class HomeController {
     static String test;
     static ArrayList<Job> jobs = new ArrayList<>();
-    static long id = 0;
+    static long id = 1;
 
     @Autowired
     UserRepository userRepository;

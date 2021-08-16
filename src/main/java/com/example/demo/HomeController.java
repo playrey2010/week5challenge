@@ -13,6 +13,7 @@ import java.util.ArrayList;
 @Controller
 public class HomeController {
     static String test;
+    static String SueTest;
     static ArrayList<Job> jobs = new ArrayList<>();
     static long id = 0;
 
